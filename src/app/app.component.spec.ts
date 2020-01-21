@@ -59,4 +59,25 @@ describe('AppComponent', () => {
     
   });
 
+  it('debe mostrar el espacio donde van las imagenes del ahorcado',()=>{
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('.ahorcado-img')).not.toBe(null);
+    
+  });
+
+  it('si selecciona letra que no es de palabra, aumenta el número de intentos y muestra imagen',()=>{
+    const fixture = TestBed.createComponent(AppComponent);
+    var componente = fixture.componentInstance;
+    componente.palabra = 'ANGULAR';
+    componente.comprobar('Z');
+    fixture.detectChanges();
+    console.log(componente.intentos);
+    expect(componente.intentos).toBe(1);
+    const compiled = fixture.debugElement.nativeElement; 
+    expect(compiled.querySelector('.ahorcado-img').src).toContain('1.png');
+  });
+
+
 });

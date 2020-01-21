@@ -13,8 +13,30 @@ export class AppComponent {
   palabra = 'AGUACATE';
   palabraOculta = '';
 
+  gano = false;
+  perdio = false;
+
   constructor() {
     this.palabraOculta = '_ '.repeat( this.palabra.length );
   }
+
+  comprobar( letra ) {
+    this.existeLetra(letra);
+   }
+
+  verificaGane() {
+  
+  }
+
+  existeLetra( letra ) {
+    if ( this.palabra.indexOf( letra ) >= 0) {
+      console.log('La letra ' + letra + ' existe');
+    } else {
+      console.log('La letra ' + letra + ' no existe');
+      this.intentos++;
+    }
+  }
+
+
 
 }

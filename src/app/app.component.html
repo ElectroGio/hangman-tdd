@@ -4,6 +4,8 @@
 </div>
 
 <div class="row">
+
+  
   <div class="text-tries">
           <h3>Intentos <small>{{ intentos }} / 9</small></h3>
   </div>
@@ -17,9 +19,10 @@
 
 <div class="row">
   <div class="letters-buttons">
-      <button *ngFor="let letra of letras" class="btn btn-primary"> {{ letra }} </button>
+      <button (click)="comprobar( letra )" *ngFor="let letra of letras" class="btn btn-primary"> {{ letra }} </button>
   </div>
 </div>
+<img src="assets/img/{{ intentos }}.png" alt="ahorcado-img" class="ahorcado-img">
 
 
 <router-outlet></router-outlet>

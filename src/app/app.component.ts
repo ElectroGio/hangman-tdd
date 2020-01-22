@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {WordProvider } from './services/wordProvider.service';
 
 @Component({
   selector: 'app-root',
@@ -12,19 +13,39 @@ export class AppComponent {
   
   palabra = 'AGUACATE';
   palabraOculta = '';
-
   gano = false;
   perdio = false;
+ 
 
-  constructor() {
+  constructor(private wordProvider: WordProvider) {
+    this.palabra = wordProvider.proveerPalabra();
     this.palabraOculta = '_ '.repeat( this.palabra.length );
+    
   }
 
   comprobar( letra ) {
     this.existeLetra(letra);
+    const palabraOcultaArr = this.palabraOculta.split(' ');
+    for (let i = 0; i < this.palabra.length; i++) {
+      if ( this.palabra[i] === letra ) {
+        palabraOcultaArr[i] = letra;
+      }
+      this.palabraOculta = palabraOcultaArr.join(' ');
+    }
+    this.verificaGane();
    }
 
   verificaGane() {
+    const palabraArr = this.palabraOculta.split(' ');
+    const palabraEvaluar = palabraArr.join('');
+
+    if ( this.intentos >= 9 ){
+      this.perdio = true;
+    }
+
+    if ( palabraEvaluar === this.palabra ) {
+      this.gano = true;
+    }
   
   }
 

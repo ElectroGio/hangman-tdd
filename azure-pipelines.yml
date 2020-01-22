@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- master
+- azure_devops
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -21,3 +21,6 @@ steps:
     ng test
     ng build --prod
   displayName: 'npm install and build'
+
+- script: npx ng test --watch=false
+  displayName: 'Tests Hangman Karma'

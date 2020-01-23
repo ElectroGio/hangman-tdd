@@ -2,6 +2,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { WordProvider } from './services/wordProvider.service';
+import { by } from 'protractor';
 
 describe('AppComponent', () => {
 
@@ -32,7 +33,7 @@ describe('AppComponent', () => {
     component = null;
   });
 
-  it('should create the app', () => {
+ it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
@@ -44,7 +45,7 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('hangman-tdd');
   });
   
-  it('debe mostar mensaje de bienvenida',() =>{
+  it('should show the welcome message',() =>{
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
@@ -52,24 +53,26 @@ describe('AppComponent', () => {
 
   });
 
-  it('debe mostrar el progreso de intentos',()=>{
+  it('should show the tries',()=>{
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
+    const compiled = fixture.debugElement.nativeElement;    
     expect(compiled.querySelector('.text-tries').textContent).toContain('Intentos 0 / 9');
   });
 
-  it('debe mostrar en botones las letras de la A a la Z',()=>{
+
+  it('should show buttons with the A-Z letters',()=>{
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    let letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-    for(var i=0; i< letras.length; i++){
-      expect(compiled.querySelector('.letters-buttons').textContent).toContain(letras[i]);
+    let letters= ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+    for(var i=0; i< letters.length; i++){
+      expect(compiled.querySelector('.letters-buttons').textContent).toContain(letters[i]);
     }
   });
 
-  it('debe mostrar por lo menos un _ que indique la palabra a encontrar',()=>{
+
+  it('should show at least one _ indicating the word to find',()=>{
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
@@ -77,79 +80,86 @@ describe('AppComponent', () => {
     
   });
 
-  it('debe mostrar el espacio donde van las imagenes del ahorcado',()=>{
+
+  it('should show the space where the hanged images go',()=>{
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.ahorcado-img')).not.toBe(null);
+    expect(compiled.querySelector('.hangman-img')).not.toBe(null);
     
   });
 
-  it('si selecciona letra que no es de palabra, aumenta el número de intentos y muestra imagen',()=>{
+
+  it('should increase the number of attempts and display image if a letter that is not in the word is selected',()=>{
     const fixture = TestBed.createComponent(AppComponent);
-    var componente = fixture.componentInstance;
-    componente.palabra = 'ANGULAR';
-    componente.comprobar('Z');
-    fixture.detectChanges();
-    expect(componente.intentos).toBe(1);
+    var component = fixture.componentInstance;
+    component.word = 'ANGULAR';
+    component.verify('Z');
+    fixture.detectChanges();    
+    expect(component.tries).toBe(1);
     const compiled = fixture.debugElement.nativeElement; 
-    expect(compiled.querySelector('.ahorcado-img').src).toContain('1.png');
+    expect(compiled.querySelector('.hangman-img').src).toContain('1.png');
   });
 
-  it('si selecciona letra que sí es de palabra, muestra su posición correcta en la palabra',()=>{
+
+  it('should show the letter in the correct position if the letter is in the word',()=>{
     const fixture = TestBed.createComponent(AppComponent);
-    var componente = fixture.componentInstance;
-    componente.palabraOculta = '_ _ _ _ _ _ _'; //Agregamos esta línea para recalcular la palabra oculta.
-    componente.palabra = 'ANGULAR';
-    componente.comprobar('A');
+    var component = fixture.componentInstance;
+    component.hiddenWord = '_ _ _ _ _ _ _'; //Agregamos esta línea para recalcular la palabra oculta.
+    component.word = 'ANGULAR';
+    component.verify('A');
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement; 
     expect(compiled.querySelector('.hidden-word').textContent).toContain('A _ _ _ _ A _');
-
+ 
   });
 
-  it('al completar los intentos máximos, notifica que perdió y muestra palabra oculta ',()=>{
+
+
+  it('should show a game over message and the correct word, if tries is at max',()=>{
     const fixture = TestBed.createComponent(AppComponent);
-    var componente = fixture.componentInstance;
-    componente.palabra = 'ANGULAR';
-    componente.intentos = 8;
-    componente.palabraOculta = '_ _ _ U L _ R'
-    componente.comprobar('M');
+    var component = fixture.componentInstance;
+    component.word = 'ANGULAR';
+    component.tries = 8;
+    component.hiddenWord = '_ _ _ U L _ R'
+    component.verify('M');
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement; 
     expect(compiled.querySelector('.gameover').textContent).toContain('HAS PERDIDO');
     expect(compiled.querySelector('.gameover').textContent).toContain('ANGULAR');
   });
 
-  it('al completar y verificar correctamente la palabra debe mostrar un mensaje notificando que el jugador ganó',()=>{
+
+  it('should show a win message when the hidden word is equals to word',()=>{
     const fixture = TestBed.createComponent(AppComponent);
-    var componente = fixture.componentInstance;
-    componente.palabra = 'ANGULAR';
-    componente.intentos = 8;
-    componente.palabraOculta = 'A _ G U L A R'
-    componente.comprobar('N');
+    var component = fixture.componentInstance;
+    component.word = 'ANGULAR';
+    component.tries = 8;
+    component.hiddenWord = 'A _ G U L A R'
+    component.verify('N');
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement; 
     expect(compiled.querySelector('.win').textContent).toContain('¡FELICIDADES HAS GANADO!');
   });
 
-  it('al ganar o perder debe ocultarse el área de los botones con las letras',()=>{
+
+  it('should hide the buttons area if the user won or lost',()=>{
     const fixture = TestBed.createComponent(AppComponent);
-    var componente = fixture.componentInstance;
-    componente.palabra = 'ANGULAR';
-    componente.intentos = 8;
-    componente.palabraOculta = 'A _ G U L A R'
-    componente.comprobar('N');
+    var component = fixture.componentInstance;
+    component.word = 'ANGULAR';
+    component.tries = 8;
+    component.hiddenWord = 'A _ G U L A R'
+    component.verify('N');
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement; 
     expect(compiled.querySelector('.letters-buttons')).toEqual(null);
   });
 
-  it('El servicio debe traer siempre un valor no vacio',()=>{
-    spy = spyOn(service,'proveerPalabra').and.returnValue('PERRO');
-    expect(service.proveerPalabra()).not.toEqual(null);
-    expect(service.proveerPalabra()).toEqual("PERRO");
-  });
 
+  it('should get always a value when the service is called',()=>{
+    spy = spyOn(service,'getNewWord').and.returnValue('PERRO');
+    expect(service.getNewWord()).not.toEqual(null);
+    expect(service.getNewWord()).toEqual("PERRO");
+  });
 
 });

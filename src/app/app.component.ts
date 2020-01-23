@@ -8,53 +8,54 @@ import {WordProvider } from './services/wordProvider.service';
 })
 export class AppComponent {
   title = 'hangman-tdd';
-  intentos = 0;
-  letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+  tries = 0;
+  letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
   
-  palabra = 'AGUACATE';
-  palabraOculta = '';
-  gano = false;
-  perdio = false;
+  word = 'AGUACATE';
+  hiddenWord = '';
+  win = false;
+  lost = false;
  
 
   constructor(private wordProvider: WordProvider) {
-    this.palabra = wordProvider.proveerPalabra();
-    this.palabraOculta = '_ '.repeat( this.palabra.length );
+    this.word = wordProvider.getNewWord();
+    this.hiddenWord = '_ '.repeat( this.word.length );
     
   }
 
-  comprobar( letra ) {
-    this.existeLetra(letra);
-    const palabraOcultaArr = this.palabraOculta.split(' ');
-    for (let i = 0; i < this.palabra.length; i++) {
-      if ( this.palabra[i] === letra ) {
-        palabraOcultaArr[i] = letra;
+  verify( letter ) {
+    console.log("di clic a "+letter)
+    this.letterExists(letter);
+    const hiddenWordArr = this.hiddenWord.split(' ');
+    for (let i = 0; i < this.word.length; i++) {
+      if ( this.word[i] === letter ) {
+        hiddenWordArr[i] = letter;
       }
-      this.palabraOculta = palabraOcultaArr.join(' ');
+      this.hiddenWord = hiddenWordArr.join(' ');
     }
-    this.verificaGane();
+    this.verifyWin();
    }
 
-  verificaGane() {
-    const palabraArr = this.palabraOculta.split(' ');
-    const palabraEvaluar = palabraArr.join('');
+  verifyWin() {
+    const wordArr = this.hiddenWord.split(' ');
+    const wordEvaluate = wordArr.join('');
 
-    if ( this.intentos >= 9 ){
-      this.perdio = true;
+    if ( this.tries >= 9 ){
+      this.lost = true;
     }
 
-    if ( palabraEvaluar === this.palabra ) {
-      this.gano = true;
+    if ( wordEvaluate === this.word ) {
+      this.win = true;
     }
   
   }
 
-  existeLetra( letra ) {
-    if ( this.palabra.indexOf( letra ) >= 0) {
-      console.log('La letra ' + letra + ' existe');
+  letterExists( letter ) {
+    if ( this.word.indexOf( letter ) >= 0) {
+      console.log('La letra ' + letter + ' existe');
     } else {
-      console.log('La letra ' + letra + ' no existe');
-      this.intentos++;
+      console.log('La letra ' + letter + ' no existe');
+      this.tries++;
     }
   }
 

@@ -23,3 +23,16 @@ steps:
 
 - script: npx ng test --watch=false
   displayName: 'Tests Hangman Karma'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Azure subscription 1 (585397d4-57ab-456c-9c2c-24f7c0753829)'
+    appType: 'webApp'
+    WebAppName: 'hangmantdd'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/dist/hangman-tdd'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'dist'
+    ArtifactName: 'app'
+    publishLocation: 'Container'

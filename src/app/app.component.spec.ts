@@ -2,6 +2,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { WordProvider } from './services/wordProvider.service';
+import { SocialLoginModule, AuthServiceConfig, FacebookLoginProvider, AuthService } from 'angularx-social-login';
 import { by } from 'protractor';
 
 describe('AppComponent', () => {
@@ -9,7 +10,19 @@ describe('AppComponent', () => {
   //Creamos las variables que van a ser usadas en las pruebas
   let component: AppComponent;
   let service: WordProvider;
+  let authService : AuthService;
   let spy: any;
+
+  const config = new AuthServiceConfig([
+    {
+      id: FacebookLoginProvider.PROVIDER_ID,
+      provider: new FacebookLoginProvider('112469726860732')
+    }
+  ]);
+  
+   function provideConfig() {
+    return config;
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -19,11 +32,15 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
-      providers:[WordProvider] //Inyectamos el proveedor para que funcione los tests.
+      providers:[WordProvider,AuthService,
+        {
+        provide: AuthServiceConfig,
+        useFactory: provideConfig
+        }] //Inyectamos el proveedor para que funcione los tests.
     }).compileComponents();
     //Creamos el servicio y el componente
     service = new WordProvider();
-    component = new AppComponent(service);
+    component = new AppComponent(service,authService);
 
   }));
 
@@ -31,6 +48,7 @@ describe('AppComponent', () => {
   afterEach(()=>{
     service = null;
     component = null;
+    authService=null;
   });
 
  it('should create the app', () => {
@@ -156,7 +174,7 @@ describe('AppComponent', () => {
   });
 
 
-  it('should get always a value when the service is called',()=>{
+  it('should always get a value when the service is called',()=>{
     spy = spyOn(service,'getNewWord').and.returnValue('PERRO');
     expect(service.getNewWord()).not.toEqual(null);
     expect(service.getNewWord()).toEqual("PERRO");

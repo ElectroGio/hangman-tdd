@@ -3,6 +3,13 @@
   <span>Bienvenido al HangMan</span>
 </div>
 
+<div class="example-container mat-elevation-z8">
+  
+        <button type="button" (click)="signInWithFB()" *ngIf="loggedIn===false" mat-flat-button color="primary">Sign In With Facebook</button>
+        <button type="button" (click)="signOut()" *ngIf="loggedIn===true" mat-flat-button color="primary">Sign Out From Facebook</button>
+</div>
+
+
 <div class="row">
 
   

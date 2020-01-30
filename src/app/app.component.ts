@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {WordProvider } from './services/wordProvider.service';
+import { AuthService, FacebookLoginProvider, SocialUser } from 'angularx-social-login';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'hangman-tdd';
   tries = 0;
   letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -15,13 +16,26 @@ export class AppComponent {
   hiddenWord = '';
   win = false;
   lost = false;
+
+  user: SocialUser;
+  loggedIn: boolean;
  
 
-  constructor(private wordProvider: WordProvider) {
+  constructor(private wordProvider: WordProvider, private authService: AuthService) {
     this.word = wordProvider.getNewWord();
     this.hiddenWord = '_ '.repeat( this.word.length );
     
   }
+
+
+  ngOnInit() {
+    this.authService.authState.subscribe((user) => {
+      this.user = user;
+      this.loggedIn = (user != null);
+      console.log(this.user);
+    });
+  }
+
 
   verify( letter ) {
     console.log("di clic a "+letter)
@@ -57,6 +71,14 @@ export class AppComponent {
       console.log('La letra ' + letter + ' no existe');
       this.tries++;
     }
+  }
+
+  signInWithFB(): void {
+    this.authService.signIn(FacebookLoginProvider.PROVIDER_ID);
+  }
+  
+  signOut(): void {
+    this.authService.signOut();
   }
 
 

@@ -1,11 +1,10 @@
-export class WordProvider{
-
+export class WordProvider {
     words = ['HOJA', 'CUADERNO', 'COMPUTADOR', 'LECHE', 'ARROZ'];
 
-    constructor(){}
+    constructor() {}
 
-    getNewWord(){
-        var pos = Math.floor(Math.random() * Math.floor(this.words.length));
-        return this.words[pos];
+    getNewWord() {
+      const pos = Math.floor(Math.random() * Math.floor(this.words.length));
+      return this.words[pos];
     }
 }

@@ -21,18 +21,38 @@ steps:
     ng build --prod
   displayName: 'npm install and build'
 
-- script: npx ng test --watch=false
+- script: npx ng test --watch=false --codeCoverage=true
   displayName: 'Tests Hangman Karma'
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'TEST-*.xml'
+  displayName: 'Publish Test Results'
+
+- task: PublishCodeCoverageResults@1
+  condition: succeededOrFailed()
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(Build.SourcesDirectory)/coverage/hangman-tdd/cobertura-coverage.xml'
+  displayName: 'Publish Code Coverage Results'
+  
+- script: npx ng lint
+  displayName: 'Code Analysis'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'dist/hangman-tdd'
+    ArtifactName: 'web-app'
+    publishLocation: 'Container'
+  displayName: 'Publish Artifacts'  
 
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
-    azureSubscription: 'Azure subscription 1 (585397d4-57ab-456c-9c2c-24f7c0753829)'
+    azureSubscription: 'Pago por uso(813c1f10-cdcd-447b-818b-b0d185f07c49)'
     appType: 'webApp'
-    WebAppName: 'hangmantdd'
+    WebAppName: 'hangman-sixdegreesapp'
     packageForLinux: '$(System.DefaultWorkingDirectory)/dist/hangman-tdd'
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: 'dist'
-    ArtifactName: 'app'
-    publishLocation: 'Container'
+

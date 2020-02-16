@@ -24,6 +24,14 @@ steps:
 - script: npx ng test --watch=false --codeCoverage=true
   displayName: 'Tests Hangman Karma'
 
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'dist/hangman-tdd'
+    ArtifactName: 'web-app'
+    publishLocation: 'Container'
+  displayName: 'Publish Artifacts'  
+
+
 - task: PublishTestResults@2
   condition: succeededOrFailed()
   inputs:
@@ -41,9 +49,3 @@ steps:
 - script: npx ng lint
   displayName: 'Code Analysis'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: 'dist/hangman-tdd'
-    ArtifactName: 'web-app'
-    publishLocation: 'Container'
-  displayName: 'Publish Artifacts'  

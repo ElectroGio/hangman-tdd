@@ -36,7 +36,7 @@ steps:
   condition: succeededOrFailed()
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: 'TEST-*.xml'
+    testResultsFiles: 'TESTS-*.xml'
   displayName: 'Publish Test Results'
 
 - task: PublishCodeCoverageResults@1
